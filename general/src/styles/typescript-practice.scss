@@ -1,0 +1,12 @@
+$primary-color: orange;
+
+.container {
+    width: 50vw;
+    height: 50vh;
+    margin: auto;
+    background-color: $primary-color;
+
+    &.circle {
+        border-radius: 50%;
+    }
+}
