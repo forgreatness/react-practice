@@ -25,7 +25,7 @@
 import React from 'react';
 
 type User = {
-    id: string;
+    id: strind;
     email: string;
     name: string;
 };
@@ -33,6 +33,7 @@ type User = {
 interface AppState {
     users: User[];
     selectedUser: User | null;
+    cash: string;
 }
 
 

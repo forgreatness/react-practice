@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, type JSX } from 'react';
 
 interface CounterState {
     count: number
 };
 
-const CounterFuncComponent: React.FC = () => {
+interface CounterFuncProps {
+    initialValue: number;
+}
+
+
+// THis functional component is written using assigned function syntax with props and state
+const CounterFuncComponent: React.FC<CounterFuncProps> = ({ initialValue }) => {
     let [counterState, setCounterState] = useState<CounterState>({ 
-        count: 0
+        count: initialValue
     });
 
     const handleIncrement = (e) => {
@@ -25,6 +31,29 @@ const CounterFuncComponent: React.FC = () => {
     );
 }
 
+// This functional component  is written using declarative syntax
+function CounterDeclartiveFuncComponent({ initialValue }: CounterFuncProps): JSX.Element {
+    let [counterState, setCounterState] = useState<CounterState>({ 
+        count: initialValue
+    });
+
+    const handleIncrement = (e) => {
+        console.log('please show the event ', e);
+
+        setCounterState((prevState) => ({
+            count: prevState.count + 1
+        }));
+    }
+
+    return (
+        <div>
+            <p>Counter @ {counterState.count}</p>
+            <button onClick={handleIncrement}>Increment</button>
+        </div>
+    )
+}
+
+// this functional component is written using class syntax
 class CounterClassComponent extends React.Component<{}, CounterState> {
     constructor(props: {}) {
         super(props);
@@ -51,4 +80,4 @@ class CounterClassComponent extends React.Component<{}, CounterState> {
 }
 
 
-export { CounterFuncComponent, CounterClassComponent }
+export { CounterFuncComponent, CounterClassComponent, CounterDeclartiveFuncComponent }
