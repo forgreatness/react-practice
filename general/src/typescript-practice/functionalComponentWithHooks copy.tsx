@@ -11,7 +11,7 @@ interface CounterFuncProps {
 
 // THis functional component is written using assigned function syntax with props and state
 const CounterFuncComponent: React.FC<CounterFuncProps> = ({ initialValue }) => {
-    let [counterState, setCounterState] = useState<CounterState>({ 
+        let [counterState, setCounterState] = useState<CounterState>({ 
         count: initialValue
     });
 

@@ -10,7 +10,8 @@ import { CounterFuncComponent, CounterClassComponent, CounterDeclartiveFuncCompo
 import { ZooComponent, AsiaRegionProps, EuropeRegionProps } from './typescript-practice/genericComponents/ZooClassComponent.tsx'
 import { Box, BoxDecFuncComponent, BoxAssignmentFuncComponent } from './typescript-practice/genericComponents/BoxClassComponent.tsx'
 import { TableComponent, DiningTable, WorkTable } from './typescript-practice/genericComponents/TableClassCoponent.tsx'
-import { CounterReducerComponent } from './typescript-practice/hooks-practice/CounterReducerComponent.tsx'
+import { CounterReducerComponent } from './typescript-practice/hooks-practice/useReducerComponent/CounterReducerComponent.tsx'
+import { TodoReducerComponent } from './typescript-practice/hooks-practice/useReducerComponent/TodoReducerComponent.tsx'
 
 const asiaRegionZoo: AsiaRegionProps = {
   type: 'asia',
@@ -45,6 +46,7 @@ createRoot(document.getElementById('root')!).render(
     <Box<number> content={3} />
     <BoxAssignmentFuncComponent<string> content="what is this cool thing" />
     <TableComponent<DiningTable> table={table1} />
+    <TodoReducerComponent />
     {/* <TypescriptPractice /> */}
   </StrictMode>,
 )
