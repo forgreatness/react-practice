@@ -25,34 +25,33 @@ const DefaultTodoState: TodoComponentState = [];
     Step #4: Error Handling for the function is throwing new Error and someone will catch it
 */
 const TodoReducer = (prevState: TodoComponentState, todoAction: TodosComponentAction) : TodoComponentState => {
-    console.log('in todo reducer', todoAction);
-    let newTodoState: TodoComponentState = JSON.parse(JSON.stringify(prevState));
-
     switch (todoAction?.type ?? "") {
         case "add": 
-            newTodoState.push(todoAction.payload);
-            break;
+            return [...prevState, todoAction.payload];
         case "remove":
-            newTodoState = newTodoState.filter(todo => todo.id != todoAction.payload.id);
-            break;
+            let newTodoState = [...prevState];
+            newTodoState.splice(newTodoState.findIndex(todo => todo.id == todoAction.payload.id), 1);
+            
+            return newTodoState;
         case "toggle":
-            return prevState.map(todo =>
-                todo.id === todoAction.payload.id
-                    ? { ...todo, hasCompleted: !todo.hasCompleted }
-                    : todo
-            );
-        default:
-            console.log('Unfamiliar Todo Action')
-    }
+            return prevState.map(todo => {
+                if (todo.id && todo.id == todoAction.payload.id) {
+                    todo.hasCompleted = todoAction.payload.hasCompleted;
+                }
 
-    return newTodoState;
+                return todo;
+            });
+        default:
+            console.log('Unfamiliar Todo Action');
+            return prevState;
+    }
 }
 
 function TodoReducerComponent() : JSX.Element {
     // UseReducer output: actionDispatcher, currentState
     // UseReducer input: defaultState, reducerFunction
 
-    const [todoState, todoEventDispatcher] = useReducer(TodoReducer, DefaultTodoState);
+    const [todoState, todoEventDispatcher] = useReducer(TodoReducer, []);
     const [newTaskInput, setNewTaskInput] = useState("");
 
     /*
@@ -66,8 +65,6 @@ function TodoReducerComponent() : JSX.Element {
         
     */
     const handleTodoItemEvent = (e: React.MouseEvent<HTMLElement>) => {
-        e.preventDefault();
-
         let elementWithEvent = e.target as HTMLElement;
         let todoListItemElement = e.currentTarget;
         let todoListItemId = todoListItemElement.id;
@@ -85,9 +82,14 @@ function TodoReducerComponent() : JSX.Element {
 
             todoEventDispatcher(removeTodoItemAction);
         } else if (elementWithEvent.id == `${todoListItemId}-status-update`) {
+            let isTodoCompleted = (elementWithEvent as HTMLInputElement)?.checked ?? false;
+
             let toggleTodoItemAction: TodosComponentAction = {
                 type: "toggle",
-                payload: todoItem
+                payload: {
+                    ...todoItem,
+                    hasCompleted: isTodoCompleted
+                }
             }
 
             todoEventDispatcher(toggleTodoItemAction);
@@ -181,14 +183,32 @@ function TodoReducerComponent() : JSX.Element {
                 {todoState.map((todo, index) => {
                     return (
                         <li id={todo?.id ?? index} key={todo?.id ?? index} onClick={handleTodoItemEvent}>
-                            <input type='checkbox' id={todo.id+'-status-update'} name={todo.id+'-status-update'} checked={todo?.hasCompleted ?? false} onChange={() => {}} />
+                            <input type='checkbox' id={todo.id+'-status-update'} name={todo.id+'-status-update'} checked={!!todo?.hasCompleted} onChange={() => {}} />
                             {todo?.taskDescription ?? ""}<button id="remove-todo-btn" className='remove_todo'>X</button>
                         </li>
                     );
                 })}
-                {/* <li>
-                    <input checked={false} type="checkbox" id="{todo.id}-status" name='{todo.id}-status' value={"todo.TaskDescription"} />
-                </li> */}
+                {/* {todoState.map((todo, index) => {
+                    return (
+                        <li id={(todo?.id ?? index)+"li"} key={(todo?.id ?? index)+"li"}>
+                            <input type="checkbox" id={`${todo?.id ?? index+'todo'}-status-update`} name={`${todo?.id ?? index+"todo"}-status-update`} checked={!!todo.hasCompleted}
+                                onChange={(e) => {
+                                    todoEventDispatcher({
+                                        type: "toggle",
+                                        payload: { id: todo.id, hasCompleted: e.target.checked, taskDescription: todo.taskDescription }
+                                    });
+                                }} />
+                            {todo.taskDescription}
+                            <button id={`${todo?.id ?? index+"todo"}-remove-btn`} className='remove-todo-btn' 
+                                onClick={(e) => {
+                                    todoEventDispatcher({
+                                        type: "remove",
+                                        payload: todo
+                                    });
+                                }}>x</button>
+                        </li>
+                    )
+                })} */}
             </ul>
             <form id='new-todo-form' onSubmit={handleNewTaskSubmit}>
                 <input name={"new-todo-input"} value={newTaskInput} onChange={(e) => { setNewTaskInput(e?.target?.value ?? newTaskInput) }}/>
